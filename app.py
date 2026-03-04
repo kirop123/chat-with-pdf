@@ -32,7 +32,7 @@ with st.sidebar:
 # ─── Initialize ChromaDB ───
 @st.cache_resource
 def get_chroma_client():
-    return chromadb.EphemeralClient()
+    return chromadb.Client()
 
 @st.cache_resource
 def get_embedding_function():

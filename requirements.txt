@@ -3,6 +3,7 @@ anthropic==0.42.0
 langchain==0.3.14
 langchain-community==0.3.14
 langchain-text-splitters==0.3.4
-chromadb==0.5.23
 pypdf==5.1.0
 sentence-transformers==3.3.1
+chromadb==0.4.22
+numpy==1.26.4
