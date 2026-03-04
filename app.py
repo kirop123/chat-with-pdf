@@ -32,7 +32,7 @@ with st.sidebar:
 # ─── Initialize ChromaDB ───
 @st.cache_resource
 def get_chroma_client():
-    return chromadb.Client()
+    return chromadb.EphemeralClient()
 
 @st.cache_resource
 def get_embedding_function():
@@ -67,6 +67,29 @@ def get_collection_name(file_name: str) -> str:
     return f"pdf_{hash_str}"
 
 def index_document(pdf_file) -> str:
+    collection_name = get_collection_name(pdf_file.name)
+
+    text = extract_text_from_pdf(pdf_file)
+    if not text.strip():
+        st.error("Could not extract text from this PDF. It may be scanned/image-based.")
+        return None
+
+    chunks = chunk_text(text)
+
+    collection = chroma_client.get_or_create_collection(
+        name=collection_name,
+        embedding_function=embedding_fn
+    )
+
+    if collection.count() > 0:
+        return collection_name
+
+    collection.add(
+        documents=chunks,
+        ids=[f"chunk_{i}" for i in range(len(chunks))]
+    )
+
+    return collection_name
     """Extract, chunk, embed, and store PDF in ChromaDB."""
     collection_name = get_collection_name(pdf_file.name)
 
